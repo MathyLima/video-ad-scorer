@@ -24,6 +24,7 @@ AI-powered analysis and recommendations engine for video ad creatives — Klike 
  * **`clicks`**
  * **`conversions`**
  * **`video_duration_s`**
+ * **`music_voice_ratio`**
  ![Gráfico de distribuição](./imagens/escala_atributos.png)
  ![Gráfico de distribuição boxplot](./imagens/boxplot_escala.png)
 
@@ -33,15 +34,22 @@ AI-powered analysis and recommendations engine for video ad creatives — Klike 
 ---
 ### Tratamento de dados Faltantes
 - **`has_subtitle`** :apresenta 46 nulos (~9% do conjunto de dados) distribuídos proporcionalmente entre plataformas. Com isto, pode-se inferir que não é problema com coleta de dados em alguma plataforma específica, onde a ausência dos valores pode significar que a informação não foi registrada e a ausência do registro sugere que o atributo não estava presente. Preenchidos com **`False`**, assumindo ausência de legenda.
-- Para os atributos **`video_duration_s`**, **`cpc`**, **`revenue`**, **`avg_watch_time_s`** e **`engagement_rate`** primeiramente foi avaliado a porcentagem de dados faltantes, como ela é baixa, não justifica a remoção das categorias. Com isto, o preenchimento dos dados por média ou mediana se apresentam como melhor estratégia, para isso, foi utilizado a medida de assimetria ou **skewness** de cada coluna, onde |**skewness**| > 1 representa uma distribuição assimétrica, o que caracteriza o preenchimento por mediana, pois nesse caso a média seria uma medida enganosa. Já |**skewness**| < 1 representa uma distribuição simétrica, apontando o cenário de preenchimento por média.
+- Para os atributos **`video_duration_s`**, **`cpc`**, **`revenue`**, **`avg_watch_time_s`** e **`engagement_rate`** e seus atributos derivados, primeiramente foi avaliado a porcentagem de dados faltantes, como ela é baixa, não justifica a remoção das categorias. Com isto, o preenchimento dos dados por média ou mediana se apresentam como melhor estratégia, para isso, foi utilizado a medida de assimetria ou **skewness** de cada coluna, onde |**skewness**| > 1 representa uma distribuição assimétrica, o que caracteriza o preenchimento por mediana, pois nesse caso a média seria uma medida enganosa. Já |**skewness**| < 1 representa uma distribuição simétrica, apontando o cenário de preenchimento por média. Por outro lado, **`music_voice_ratio`** apresenta um **skewness** < 1, sendo assim é recomendado aplicar a média
 ![Distribuição de cada atributo e o valor de assimetria](/imagens/valor_assimetria_atributos.png)
 ---
 ### Tratamento de Outliers
  Outliers têm como definição valores extremos ligados aos dados, sejam eles muito grandes ou muito pequenos. No entanto, nem sempre a presença de outlier significa que o registro deve ser removido. Existem atributos que naturalmente podem conter valores extremos, principalmente quando se fala de caraterísticas inseridas no contexto de redes sociais, como impressões, quantidade de cliques, valor gasto e receita gerada.
-- **`impressions`** e **`clicks`**: são metricas que indicam a "quantidade de algo" que crescem muito, onde seus valores podem assumir várias ordens de magnitude. Sendo assim, como o objetivo final é a utilização para regressão, pode-se aplicar log, que comprimir a escala da característica, mantendo sua ordem relativa, o que o impacto dos valores extremos em análises e modelos, já que as estatísticas como média e correlação ficam menos influenciadas por esses valores.
-- **`spend`**, **`revenue`** e **`conversions`**: são métricas financeiras e de resultado que podem variar bastante entre campanhas, assumindo diferentes ordens de magnitude. Para padronizar a escala sem distorcer a relação entre os valores, aplicou-se o MinMaxScaler, que transforma cada atributo para o intervalo [0, 1] com base no mínimo e máximo observados. Isso reduz o impacto de valores extremos em modelos de machine learning, evitando que atributos de maior magnitude dominem o aprendizado em detrimento dos demais.
-Após a normalização entre mínimo e máximo e a aplicação de log, o resultado obtido:
+- **`impressions`**, **`clicks`**, **`spend`**, **`revenue`** e **`conversions`**: são metricas que indicam a "quantidade de algo" que crescem muito, onde seus valores podem assumir várias ordens de magnitude. Para definir a estratégia a ser utilizada, foram avaliadas 3 estratégias: 
+  * Escalonador MinMax sem log: normaliza os dados sem alterar a escala original.
+  * Log seguido de MinMax: aplica log1p antes da normalização, comprimindo a escala e reduzindo a influência de valores muito altos.
+  * RobustScaler: normaliza os dados usando estatísticas robustas (mediana e IQR), menos sensíveis a outliers.Escalonador MinMax sem utilização da converção do log para normalizar os dados, o uso do log antes de escalonar e o RobustScaler.
+ ![Comparação de estratégias de normalização](./imagens/estrategias_normalizacao.png)
+  Observa-se que a estratégia que torna os dados mais simétricos e distribuidos é o log seguido de MinMax.
+  Portanto, como o objetivo final é aplicar modelos de regressão, recomenda-se:
+  * Aplicar log1p para comprimir a escala da variável, mantendo sua ordem relativa e reduzindo o impacto de valores extremos nas análises, estatísticas como média e correlação, e nos modelos.
+  * Em seguida, aplicar o MinMaxScaler, que transforma todos os valores para a faixa entre 0 e 1. O escalonamento só deve ser feito após o log, pois valores muito grandes poderiam comprimir demais os valores pequenos se o MinMax fosse aplicado diretamente.
  ![BoxPlot pós tratamento de escala](./imagens/distribuicao_apos_norm_lg.png)
+
 ---
 
 
