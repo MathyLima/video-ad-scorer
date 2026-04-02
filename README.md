@@ -100,12 +100,16 @@ As correlações entre os entre os atributos criativos apresentam algumas semelh
   No TikTok, vídeos mais longos também aumentam o tempo assistido (0.65), porém o formato e o ritmo do conteúdo parecem ser mais determinantes para engajamento do que a duração em si.
 ---
 ### Visualizações Marketing
+
  **Ranking de impacto por plataforma: mostra lado a lado quais atributos ajudam ou prejudicam o klike_score em cada canal.**
 ![alt text](./imagens/ranking_impacto_plataforma.png)
+
  **Radar do perfil criativo ideal: compara visualmente o "receituário" de cada plataforma**
 ![alt text](./imagens/radar_perfil_criativo_plataforma.png)
-**Universal vs. específico: deixa claro o que funciona em todos os canais (hook, rosto, CTA) vs. o que muda dependendo da plataforma**
-[alt text](./imagens/universal_x_especifico.png)
+
+**Universal vs. específico: o que funciona em todos os canais (hook, rosto, CTA) vs. o que muda dependendo da plataforma**
+![alt text](./imagens/universal_x_especifico.png)
+
 ---
 
 ---
