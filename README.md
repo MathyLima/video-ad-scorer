@@ -25,7 +25,7 @@ AI-powered analysis and recommendations engine for video ad creatives — Klike 
  * **`engagement_rate`** (6.4%)
  ![Gráfico de valores faltantes](./imagens/quantidade_faltantes_coluna.png)
  ![Gráfico de valores faltantes Porcentagem](./imagens/porcentagem_faltantes_coluna.png)
-
+![alt text](image.png)
  Os números sugerem que os valores faltantes não estão ligados à problemas generalizados na coleta dos dados. Entretanto algumas colunas podem ter padrões específicos de ausências, sendo necessário mais análises, como checar se os valores faltantes estão relacionados a uma plataforma ou grupo específico de vídeos ou campanhas.
 ---
 ### Escala nos atributos
