@@ -109,6 +109,7 @@ As correlações entre os entre os atributos criativos apresentam algumas semelh
 
 **Universal vs. específico: o que funciona em todos os canais (hook, rosto, CTA) vs. o que muda dependendo da plataforma**
 ![alt text](./imagens/universal_x_especifico.png)
+
 ---
 
 ---
