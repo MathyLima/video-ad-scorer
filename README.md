@@ -105,7 +105,7 @@ As correlações entre os entre os atributos criativos apresentam algumas semelh
  **Radar do perfil criativo ideal: compara visualmente o "receituário" de cada plataforma**
 ![alt text](./imagens/radar_perfil_criativo_plataforma.png)
 **Universal vs. específico: deixa claro o que funciona em todos os canais (hook, rosto, CTA) vs. o que muda dependendo da plataforma**
-[alt text](./imagens/universal_x_especifico.png)
+![alt text](./imagens/universal_x_especifico.png)
 ---
 
 ---
