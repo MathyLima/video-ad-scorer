@@ -113,3 +113,75 @@ As correlações entre os entre os atributos criativos apresentam algumas semelh
 ---
 
 ---
+## Modelagem
+
+### Feature Engineering
+ Com o objetivo de enriquecer o dataset e capturar padrões relevantes para a predição do **`klike_score`**, foram criadas novas features a partir das variáveis originais, organizadas em grupos:
+
+ **Features temporais**
+ A coluna **`date`** em seu formato puro não representa informação útil para modelos. Entretanto, é possível derivar atributos com maior poder explicativo:
+ * **`dia_da_semana`**: dia da semana da veiculação (0 = segunda).
+ * **`fl_final_semana`**: flag indicando se o anúncio foi veiculado em um final de semana.
+ * **`posicao_mes_veiculacao`**: divide o mês em quartis (início, meio1, meio2, fim), capturando possíveis padrões de sazonalidade intra-mensal nas campanhas.
+
+ **Interações estratégicas**
+ Combinações entre plataforma, objetivo e período foram criadas para capturar comportamentos específicos de cada contexto de veiculação:
+ * **`objective_platform`**: cruzamento entre objetivo da campanha e plataforma.
+ * **`platform_weekend`**: combinação entre plataforma e flag de final de semana.
+ * **`obj_mes`**: cruzamento entre objetivo e posição no mês.
+ * **`duration_obj`**: combinação entre categoria de duração do vídeo e objetivo, capturando se determinada duração é mais adequada para awareness, conversão, etc.
+
+ **Features de eficiência de performance**
+ Métricas derivadas que buscam capturar a eficiência do anúncio de formas que as variáveis brutas isoladas não conseguem:
+ * **`porcentagem_assistida`**: razão entre tempo médio assistido e duração do vídeo — quanto do conteúdo o usuário realmente consumiu.
+ * **`fl_replay`**: flag que identifica quando o tempo médio assistido supera a duração do vídeo, indicando possível replay.
+ * **`receita_x_click`**: receita gerada por clique, proxy de qualidade do tráfego.
+ * **`custo_x_conversao`**: custo por conversão, medida de eficiência de gasto.
+ * **`ctr_x_roas`**: produto entre CTR e ROAS, combinando taxa de clique com retorno sobre o investimento.
+ * **`engagement_rate_x_ctr`**: interação entre engajamento e clique, capturando anúncios que geram tanto atenção quanto ação.
+
+ **Features do criativo**
+ * **`completude_criativa`**: soma de **`has_subtitle`**, **`has_cta`**, **`has_hook`** e **`has_face`** — varia de 0 a 4, medindo o quão completo é o criativo em boas práticas.
+ * **`text_density_cat`**: mapeamento ordinal da densidade de texto (low=0, medium=1, high=2).
+ * **`target_audience_age_cat`**: mapeamento ordinal da faixa etária do público-alvo.
+
+ **Interações plataforma × criativo**
+ A análise de comportamento por plataforma evidenciou que o efeito de alguns atributos criativos varia dependendo do canal. Com isso, foram criadas interações específicas:
+ * **`has_hook_Meta`**: interação entre presença de hook e plataforma Meta.
+ * **`has_face_TikTok`**: interação entre presença de rosto e TikTok.
+ * **`text_density_horizontal_Meta`**: interação tripla entre alta densidade de texto, formato horizontal e plataforma Meta — combinação que mostrou padrão negativo na EDA.
+
+---
+### Modelo
+ O modelo escolhido para predição do **`klike_score`** foi o **XGBRegressor** (XGBoost). Modelos baseados em árvores com boosting são naturalmente robustos a outliers e não exigem que os dados sejam normalizados — o que é relevante dado o perfil assimétrico de diversas features do dataset. Além disso, lidam bem com interações não-lineares entre variáveis e oferecem feature importance nativa, facilitando a interpretação dos resultados sob perspectiva de negócio.
+
+ Os hiperparâmetros utilizados foram:
+ * **`n_estimators`**: 300
+ * **`max_depth`**: 6
+ * **`learning_rate`**: 0.05
+ * **`objective`**: reg:absoluteerror — mais robusto a outliers do que o MSE padrão, alinhando a função de perda ao MAE reportado na avaliação.
+
+---
+### Avaliação
+ O modelo foi avaliado em um conjunto de teste com 30% dos dados (`random_state=42`), obtendo os seguintes resultados:
+ * **RMSE**: 7.03
+ * **MAE**: 5.55
+ * **R²**: 0.78
+
+ O R² de **0.78** indica que o modelo explica aproximadamente 78% da variância do **`klike_score`**, um resultado sólido considerando que parte do score depende de fatores subjetivos e contextuais não capturados pelas features disponíveis. O MAE de **5.55** significa que, em média, o modelo erra em torno de 5,5 pontos no score. O RMSE levemente superior ao MAE (7.03 vs 5.55) indica a presença de alguns erros maiores em casos específicos, o que é esperado em distribuições com exemplos de alta performance que são naturalmente mais difíceis de prever.
+
+---
+### Feature Importance
+![alt text](./imagens/feature_importance.png)
+ As features de maior importância identificadas pelo modelo foram:
+ * **`ctr_x_roas`** (0.030): a feature mais importante do modelo, combinando taxa de clique e retorno sobre investimento — anúncios que geram clique e convertem em receita são os que mais explicam o score.
+ * **`custo_x_conversao`** (0.021): eficiência de gasto por conversão, reforçando que o modelo valoriza a relação entre investimento e resultado.
+ * **`completude_criativa`** (0.021): anúncios com mais elementos de boas práticas combinados (hook + legenda + CTA + rosto) tendem a performar melhor do que os que apostam em apenas um elemento isolado.
+ * **`has_hook`** (0.020): consistente com a análise de correlação da EDA, onde o hook apresentou a maior associação positiva com o **`klike_score`** nas três plataformas (Meta: 0.59, TikTok: 0.54, LinkedIn: 0.50).
+ * **`category_Branding`** e **`engagement_rate_x_ctr`** (0.019): categoria da campanha e a interação entre engajamento e clique também aparecem com relevância similar.
+
+ Esse resultado faz sentido do ponto de vista de negócio: o **`klike_score`** é em essência uma síntese do desempenho do anúncio, portanto métricas que capturam eficiência de gasto e retorno (**`ctr_x_roas`**, **`custo_x_conversao`**) são naturalmente as preditoras mais fortes. Entre os atributos criativos puros, o **`has_hook`** e a **`completude_criativa`** se destacam, reforçando que capturar atenção nos primeiros segundos e combinar múltiplos elementos criativos são as práticas com maior impacto no desempenho dos anúncios.
+
+---
+
+---
