@@ -2,6 +2,33 @@
 ---
 AI-powered analysis and recommendations engine for video ad creatives — Klike Data Science Challenge
 ---
+## Como rodar
+
+### Pré-requisitos
+- Python 3.10+
+- pip
+
+### Instalação
+
+Clone o repositório e instale as dependências:
+```bash
+git clone <url-do-repositorio>
+cd <nome-do-repositorio>
+pip install -r requirements.txt
+```
+
+### Execução
+
+Abra os notebooks na ordem:
+1. `01_eda.ipynb` — Análise Exploratória
+2. `02_modelagem.ipynb` — Feature Engineering e Modelo
+3. `03_recomendacoes.ipynb` — Engine de Recomendações
+```bash
+jupyter notebook
+```
+
+> As bibliotecas principais utilizadas foram `xgboost`, `scikit-learn`, `lightgbm`, `shap`, `dice_ml`, `pandas`, `matplotlib` e `seaborn`.
+---
 ## EDA
 
 ### Visão geral dos dados
