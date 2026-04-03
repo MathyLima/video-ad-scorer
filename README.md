@@ -39,7 +39,6 @@ jupyter notebook
  * Simétrico
   As features **` impressions `**, **` clicks `**, **` spend `**, **` conversions `**, **` revenue `**, **` roas `**, **` avg_watch_time_s `**,**` cpc `**, **`video_duration_s`** possuem uma distribuição fortemente assimétrica, o que indica presença de outliers por ter muitos valores pequenos e poucos valores grandes ( Diferença em escala causando assimetria ). Mas é importante avaliar se esses Outliers são naturais ou não e eles devem ser completamente eliminados ou se eles expõem a distribuição natural do contexto.
 
-  I
   Isso significa que poucos vídeos performam muito ( o que é comum em plataformas digitais ).
 ---
 ### Valores faltantes
