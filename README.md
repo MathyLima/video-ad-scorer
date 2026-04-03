@@ -189,19 +189,19 @@ As correlações entre os entre os atributos criativos apresentam algumas semelh
  - A detecção da quantidade e frequência de cortes, se há elementos como zoom em momentos dramáticos para trazer tensão e reter o usuário
  - O que tem no texto importa muito mais do que só a sua intensidade, poderia verificar a presença de perguntas por exemplo, por meio de detecção de potuação.
 ### Como você colocaria o seu Recommendations Engine em produção? Pense em arquitetura, escalabilidade e como ele se integraria a um produto real. 
-  - A arquitetura seria dividida em 3 camadas
-  * Camada de inferência - API REST que recebe os atributos de uma campanha e retornaria as recomendações. O modelo ficaria serializado (PICKLE) e carregado em memória.
-  * Camada de dados e features - um pipeline de feature engineering reproduzível (usando Feast ou Hopsworks como feature store) — eliminando training/serving skew. As features são calculadas offline (batch) e armazenadas para consulta em tempo real.
-  * Camada de aprendizado contínuo o que funciona no TikTok em janeiro pode não funcionar em junho. Por isso, o pipeline de retreinamento seria automatizado (semanal ou quinzenal) com novos dados de performance, com gates de qualidade antes de promover um novo modelo para produção (comparação de métricas vs modelo atual em holdout set).
+  * A arquitetura seria dividida em 3 camadas
+  - Camada de inferência - API REST que recebe os atributos de uma campanha e retornaria as recomendações. O modelo ficaria serializado (PICKLE) e carregado em memória.
+  - Camada de dados e features - um pipeline de feature engineering reproduzível (usando Feast ou Hopsworks como feature store) — eliminando training/serving skew. As features são calculadas offline (batch) e armazenadas para consulta em tempo real.
+  - Camada de aprendizado contínuo o que funciona no TikTok em janeiro pode não funcionar em junho. Por isso, o pipeline de retreinamento seria automatizado (semanal ou quinzenal) com novos dados de performance, com gates de qualidade antes de promover um novo modelo para produção (comparação de métricas vs modelo atual em holdout set).
 - Integração com o produto
  *  engine se integraria como um microserviço chamado assincronamente quando um usuário analisa um criativo na plataforma. As recomendações seriam exibidas em formato "cards de ação" priorizados, cada um com o impacto estimado e o contexto que gerou aquela recomendação (ex: "com base em 47 campanhas similares no TikTok com público 25-34").
 - Escalabilidade
  * Para grandes volumes, o processamento pesado (análise de vídeo, se implementado) ficaria em uma fila assíncrona (Celery + Redis ou SQS), desacoplado da API de resposta síncrona. O usuário receberia as recomendações de metadados imediatamente e as de análise visual em alguns segundos.
- - Observabilidade
- * Monitoramento de três dimensões: 
-  * performance técnica — latência, taxa de erro
-  * performance do modelo — distribuição do klike_score predito ao longo do tempo (drift detection)
-  * impacto de negócio — taxa de adoção das recomendações e correlação com melhora real nas métricas da campanha após aplicar as sugestões.
+ * Observabilidade
+ - Monitoramento de três dimensões: 
+  - performance técnica — latência, taxa de erro
+  - performance do modelo — distribuição do klike_score predito ao longo do tempo (drift detection)
+  - impacto de negócio — taxa de adoção das recomendações e correlação com melhora real nas métricas da campanha após aplicar as sugestões.
 ### O que mais você faria se tivesse mais tempo? Que análises, experimentos ou melhorias no engine ficaram de fora?
   * Análises que não fiz mas que fariam diferença:
      - Faria uma análise maior na coluna date, a fim de extrair informações como: Há degradação de performance ao longo do tempo de veiculação do mesmo criativo?
