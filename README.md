@@ -196,7 +196,7 @@ As correlações entre os entre os atributos criativos apresentam algumas semelh
 - Integração com o produto
  *  engine se integraria como um microserviço chamado assincronamente quando um usuário analisa um criativo na plataforma. As recomendações seriam exibidas em formato "cards de ação" priorizados, cada um com o impacto estimado e o contexto que gerou aquela recomendação (ex: "com base em 47 campanhas similares no TikTok com público 25-34").
 - Escalabilidade
- * Para grandes volumes, o processamento pesado (análise de vídeo, se implementado) ficaria em uma fila assíncrona (Celery + Redis ou SQS), desacoplado da API de resposta síncrona. O usuário receberia as recomendações de metadados imediatamente e as de análise visual em alguns segundos.
+ - Para grandes volumes, o processamento pesado (análise de vídeo, se implementado) ficaria em uma fila assíncrona (Celery + Redis ou SQS), desacoplado da API de resposta síncrona. O usuário receberia as recomendações de metadados imediatamente e as de análise visual em alguns segundos.
  * Observabilidade
  - Monitoramento de três dimensões: 
   - performance técnica — latência, taxa de erro
